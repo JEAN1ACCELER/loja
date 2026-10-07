@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Visão geral{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">RESUMO DA LOJA</span><h1>Visão geral</h1><p>Acompanhe o que está acontecendo na sua loja.</p></div><a class="button primary" href="{{ url_for('sale_new') }}">＋ Nova venda</a></div>
+<div class="stats-grid">
+    <article class="stat-card"><span class="stat-icon orange">▤</span><span class="stat-label">Produtos cadastrados</span><strong>{{ summary.products }}</strong><small>itens no catálogo</small></article>
+    <article class="stat-card"><span class="stat-icon blue">⇧</span><span class="stat-label">Vendas hoje</span><strong>{{ summary.sales_today }}</strong><small>vendas registradas</small></article>
+    <article class="stat-card"><span class="stat-icon green">R$</span><span class="stat-label">Faturamento de hoje</span><strong>{{ summary.revenue_today|currency }}</strong><small>valor bruto vendido</small></article>
+    <article class="stat-card"><span class="stat-icon purple">♙</span><span class="stat-label">Equipe ativa</span><strong>{{ summary.team }}</strong><small>usuários ativos</small></article>
+</div>
+<div class="dashboard-grid">
+    <section class="panel"><div class="panel-heading"><div><h2>Estoque baixo</h2><p>Produtos no limite mínimo ou abaixo</p></div><a class="text-link" href="{{ url_for('products') }}">Ver produtos →</a></div>
+        {% if low_stock %}<div class="table-wrap"><table><thead><tr><th>PRODUTO</th><th>CÓDIGO</th><th>ESTOQUE</th><th>STATUS</th></tr></thead><tbody>{% for product in low_stock %}<tr><td class="cell-strong">{{ product.name }}</td><td>{{ product.sku }}</td><td>{{ product.stock }} {{ product.unit }}</td><td><span class="badge danger">Repor estoque</span></td></tr>{% endfor %}</tbody></table></div>
+        {% else %}<div class="empty-state"><span>✓</span><strong>Estoque em dia</strong><p>Nenhum produto atingiu o estoque mínimo.</p></div>{% endif %}
+    </section>
+    <section class="panel"><div class="panel-heading"><div><h2>Vendas recentes</h2><p>Últimas movimentações</p></div><a class="text-link" href="{{ url_for('sales') }}">Ver todas →</a></div>
+        {% if recent_sales %}<div class="recent-list">{% for sale in recent_sales %}<a class="recent-item" href="{{ url_for('sale_detail', sale_id=sale.id) }}"><span class="sale-avatar">#{{ sale.id }}</span><span class="recent-info"><strong>Venda #{{ sale.id }}</strong><small>{{ sale.seller_name }} · {{ sale.created_at[:16] }}</small></span><strong class="recent-total">{{ sale.total|currency }}</strong></a>{% endfor %}</div>
+        {% else %}<div class="empty-state"><span>↗</span><strong>Sem vendas por enquanto</strong><p>As vendas registradas aparecerão aqui.</p></div>{% endif %}
+    </section>
+</div>
+<div class="quick-actions"><span class="eyebrow">ATALHOS</span><div><a href="{{ url_for('product_new') }}">＋ Cadastrar produto</a>{% if user_role == 'admin' %}<a href="{{ url_for('user_new') }}">♙ Adicionar à equipe</a>{% endif %}<a href="{{ url_for('sale_new') }}">⇧ Registrar venda</a></div></div>
+{% endblock %}

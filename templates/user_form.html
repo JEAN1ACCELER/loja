@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar usuário' if user else 'Novo usuário' }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">ACESSOS E PERMISSÕES</span><h1>{{ 'Editar usuário' if user else 'Adicionar à equipe' }}</h1><p>{{ 'Atualize os dados de acesso e contato.' if user else 'Crie o acesso de um administrador ou vendedor.' }}</p></div><a class="button secondary" href="{{ url_for('team') }}">← Voltar</a></div>
+<form method="post" class="panel form-panel"><input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+<div class="form-section"><h2>Dados da conta</h2><p>O e-mail será usado para entrar no sistema.</p><div class="form-grid">
+<label class="span-2">Nome completo<input name="name" value="{{ request.form.get('name', user.name if user else '') }}" placeholder="Nome do funcionário" required></label>
+<label>E-mail<input type="email" name="email" value="{{ request.form.get('email', user.email if user else '') }}" placeholder="nome@loja.com.br" required></label>
+<label>Telefone<input name="phone" value="{{ request.form.get('phone', user.phone if user else '') }}" placeholder="(00) 00000-0000"></label>
+<label>Função<select name="role" required>{% set chosen_role = request.form.get('role', user.role if user else 'seller') %}<option value="seller" {{ 'selected' if chosen_role == 'seller' }}>Vendedor</option><option value="admin" {{ 'selected' if chosen_role == 'admin' }}>Administrador</option></select></label>
+<label>{{ 'Nova senha (opcional)' if user else 'Senha inicial' }}<input type="password" name="password" minlength="8" autocomplete="new-password" {{ 'required' if not user }} placeholder="{{ 'Deixe em branco para manter a atual' if user else 'Mínimo de 8 caracteres' }}">{% if not user %}<small class="field-hint">Use pelo menos 8 caracteres.</small>{% endif %}</label>
+</div></div>
+<div class="form-actions"><a class="button secondary" href="{{ url_for('team') }}">Cancelar</a><button class="button primary" type="submit">{{ 'Salvar alterações' if user else 'Criar usuário' }}</button></div>
+</form>
+{% endblock %}

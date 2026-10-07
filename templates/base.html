@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}ObraFácil{% endblock %} | Material de Construção</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+<body>
+    {% if current_user %}
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <a class="brand" href="{{ url_for('dashboard') }}">
+                <span class="brand-mark">O</span><span>obra<span class="brand-light">fácil</span><small>GESTÃO DE LOJA</small></span>
+            </a>
+            <div class="nav-label">MENU PRINCIPAL</div>
+            <nav class="main-nav">
+                <a class="{{ 'active' if request.endpoint == 'dashboard' }}" href="{{ url_for('dashboard') }}"><span>▦</span> Visão geral</a>
+                <a class="{{ 'active' if request.endpoint and request.endpoint.startswith('products') }}" href="{{ url_for('products') }}"><span>▤</span> Produtos</a>
+                <a class="{{ 'active' if request.endpoint and request.endpoint.startswith('sales') }}" href="{{ url_for('sales') }}"><span>⇧</span> Vendas</a>
+                <a class="{{ 'active' if request.endpoint == 'account_password' }}" href="{{ url_for('account_password') }}"><span>⚙</span> Minha conta</a>
+                {% if user_role == 'admin' %}
+                <a class="{{ 'active' if request.endpoint and request.endpoint.startswith('team') }}" href="{{ url_for('team') }}"><span>♙</span> Equipe</a>
+                {% endif %}
+            </nav>
+            <div class="sidebar-bottom">
+                <div class="store-chip"><span class="store-dot"></span><span><strong>Loja principal</strong><small>Sistema operacional</small></span></div>
+                <div class="profile">
+                    <span class="avatar">{{ current_user[:1]|upper }}</span>
+                    <span class="profile-name"><strong>{{ current_user }}</strong><small>{{ 'Administrador' if user_role == 'admin' else 'Vendedor' }}</small></span>
+                    <form method="post" action="{{ url_for('logout') }}">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <button class="icon-button logout" title="Sair" aria-label="Sair">↗</button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+        <main class="main-area">
+            <header class="topbar"><button class="menu-toggle" data-menu-toggle aria-label="Abrir menu">☰</button><span>Material de Construção <span class="breadcrumb">/ {{ self.title() }}</span></span><span class="topbar-date" data-date></span></header>
+            <section class="page-content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}<button class="flash-close" aria-label="Fechar">×</button></div>{% endfor %}</div>{% endif %}
+                {% endwith %}
+                {% block content %}{% endblock %}
+            </section>
+        </main>
+    </div>
+    {% else %}
+        {% block public_content %}{% endblock %}
+    {% endif %}
+</body>
+</html>

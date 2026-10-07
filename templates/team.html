@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Equipe{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">ACESSOS E PERMISSÕES</span><h1>Equipe</h1><p>Cadastre e gerencie administradores e vendedores.</p></div><a class="button primary" href="{{ url_for('user_new') }}">＋ Novo usuário</a></div>
+<section class="panel listing-panel"><div class="table-wrap"><table><thead><tr><th>NOME</th><th>E-MAIL</th><th>TELEFONE</th><th>FUNÇÃO</th><th>STATUS</th><th></th></tr></thead><tbody>
+{% for user in users %}<tr><td class="cell-strong"><span class="person-cell"><span class="avatar small">{{ user.name[:1]|upper }}</span>{{ user.name }}</span></td><td>{{ user.email }}</td><td>{{ user.phone or '—' }}</td><td><span class="badge {{ 'admin-badge' if user.role == 'admin' }}">{{ 'Administrador' if user.role == 'admin' else 'Vendedor' }}</span></td><td><span class="badge {{ 'success' if user.active else 'muted' }}">{{ 'Ativo' if user.active else 'Inativo' }}</span></td><td class="actions"><a class="icon-button" href="{{ url_for('user_edit', user_id=user.id) }}" title="Editar">✎</a>{% if user.id != session.user_id %}<form method="post" action="{{ url_for('user_toggle', user_id=user.id) }}" data-confirm="{{ 'Desativar' if user.active else 'Reativar' }} este usuário?"><input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><button class="icon-button {{ 'danger-text' if user.active }}" title="{{ 'Desativar' if user.active else 'Reativar' }}">{{ '⊘' if user.active else '✓' }}</button></form>{% endif %}</td></tr>
+{% endfor %}</tbody></table></div><div class="table-footer">{{ users|length }} usuário(s) cadastrado(s)</div></section>
+{% endblock %}

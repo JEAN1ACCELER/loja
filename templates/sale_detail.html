@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Venda #{{ sale.id }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">COMPROVANTE DE VENDA</span><h1>Venda #{{ sale.id }}</h1><p>Registrada em {{ sale.created_at[:16] }} por {{ sale.seller_name }}.</p></div><a class="button secondary" href="{{ url_for('sales') }}">← Voltar às vendas</a></div>
+<section class="panel listing-panel"><div class="sale-summary"><div><span>Vendedor</span><strong>{{ sale.seller_name }}</strong></div><div><span>Pagamento</span><strong>{{ sale.payment_method }}</strong></div><div><span>Data</span><strong>{{ sale.created_at[:16] }}</strong></div></div><div class="table-wrap"><table><thead><tr><th>PRODUTO</th><th>QUANTIDADE</th><th>PREÇO UNITÁRIO</th><th>SUBTOTAL</th></tr></thead><tbody>{% for item in items %}<tr><td class="cell-strong">{{ item.product_name }}</td><td>{{ item.quantity }}</td><td>{{ item.unit_price|currency }}</td><td class="cell-strong">{{ item.subtotal|currency }}</td></tr>{% endfor %}</tbody><tfoot><tr><td colspan="3" class="total-label">Total da venda</td><td class="grand-total">{{ sale.total|currency }}</td></tr></tfoot></table></div></section>
+{% endblock %}

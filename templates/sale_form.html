@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Nova venda{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">MOVIMENTAÇÃO DA LOJA</span><h1>Registrar venda</h1><p>Adicione produtos e confirme o pagamento.</p></div><a class="button secondary" href="{{ url_for('sales') }}">← Voltar</a></div>
+{% if not products %}<div class="flash error">Não há produtos com estoque disponível. <a href="{{ url_for('product_new') }}">Cadastre ou reponha produtos</a> antes de registrar uma venda.</div>{% else %}
+<form method="post" class="panel form-panel sale-form" data-sale-form><input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+{% if user_role == 'admin' %}<div class="form-section"><h2>Responsável pela venda</h2><div class="form-grid"><label>Vendedor<select name="seller_id" required><option value="{{ session.user_id }}">{{ current_user }} (Administrador)</option>{% for seller in sellers %}<option value="{{ seller.id }}">{{ seller.name }}</option>{% endfor %}</select></label></div></div>{% endif %}
+<div class="form-section"><div class="section-row"><div><h2>Produtos da venda</h2><p>O estoque será atualizado automaticamente após a confirmação.</p></div><button class="button secondary" type="button" data-add-sale-row>＋ Adicionar produto</button></div>
+<div class="sale-items" data-sale-items>
+<div class="sale-row" data-sale-row><label>Produto<select name="product_id[]" required data-product-select><option value="">Selecione um produto</option>{% for product in products %}<option value="{{ product.id }}" data-price="{{ '%.2f'|format(product.price) }}" data-stock="{{ product.stock }}">{{ product.name }} · {{ product.sku }} ({{ product.stock }} {{ product.unit }}) — {{ product.price|currency }}</option>{% endfor %}</select></label><label>Quantidade<input name="quantity[]" type="number" value="1" min="1" step="1" required data-quantity></label><button class="icon-button remove-row" type="button" data-remove-sale-row title="Remover linha" aria-label="Remover linha">×</button></div>
+</div>
+</div>
+<div class="form-grid payment-grid"><label>Forma de pagamento<select name="payment_method" required><option value="">Selecione</option><option>Dinheiro</option><option>PIX</option><option>Cartão de débito</option><option>Cartão de crédito</option></select></label><div class="sale-total"><span>Total da venda</span><strong data-sale-total>R$ 0,00</strong></div></div>
+<div class="form-actions"><a class="button secondary" href="{{ url_for('sales') }}">Cancelar</a><button class="button primary" type="submit">Confirmar venda</button></div>
+</form>{% endif %}
+<template data-sale-row-template><div class="sale-row" data-sale-row><label>Produto<select name="product_id[]" required data-product-select><option value="">Selecione um produto</option>{% for product in products %}<option value="{{ product.id }}" data-price="{{ '%.2f'|format(product.price) }}" data-stock="{{ product.stock }}">{{ product.name }} · {{ product.sku }} ({{ product.stock }} {{ product.unit }}) — {{ product.price|currency }}</option>{% endfor %}</select></label><label>Quantidade<input name="quantity[]" type="number" value="1" min="1" step="1" required data-quantity></label><button class="icon-button remove-row" type="button" data-remove-sale-row title="Remover linha" aria-label="Remover linha">×</button></div></template>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Produtos{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">CATÁLOGO E ESTOQUE</span><h1>Produtos</h1><p>Gerencie itens, preços e quantidades disponíveis.</p></div><a class="button primary" href="{{ url_for('product_new') }}">＋ Novo produto</a></div>
+<section class="panel listing-panel"><form class="search-bar" method="get"><span>⌕</span><input name="q" value="{{ search }}" placeholder="Buscar por produto, código ou categoria"><button class="button secondary" type="submit">Buscar</button>{% if search %}<a class="clear-search" href="{{ url_for('products') }}">Limpar</a>{% endif %}</form>
+<div class="table-wrap"><table><thead><tr><th>PRODUTO</th><th>CÓDIGO SKU</th><th>CATEGORIA</th><th>PREÇO</th><th>ESTOQUE</th><th>STATUS</th><th></th></tr></thead><tbody>
+{% for product in products %}<tr><td class="cell-strong">{{ product.name }}<small class="table-sub">Custo {{ product.cost|currency }}</small></td><td>{{ product.sku }}</td><td>{{ product.category }}</td><td class="cell-strong">{{ product.price|currency }}<small class="table-sub">por {{ product.unit }}</small></td><td>{{ product.stock }} {{ product.unit }}</td><td>{% if product.stock <= product.minimum_stock %}<span class="badge danger">Estoque baixo</span>{% else %}<span class="badge success">Disponível</span>{% endif %}</td><td class="actions"><a class="icon-button" href="{{ url_for('product_edit', product_id=product.id) }}" title="Editar">✎</a><form method="post" action="{{ url_for('product_delete', product_id=product.id) }}" data-confirm="Excluir este produto? Produtos presentes em vendas não podem ser excluídos."><input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><button class="icon-button danger-text" title="Excluir">⌫</button></form></td></tr>
+{% else %}<tr><td colspan="7"><div class="empty-inline">Nenhum produto encontrado. <a href="{{ url_for('product_new') }}">Cadastre o primeiro produto.</a></div></td></tr>{% endfor %}
+</tbody></table></div><div class="table-footer">{{ products|length }} produto(s) encontrado(s)</div></section>
+{% endblock %}

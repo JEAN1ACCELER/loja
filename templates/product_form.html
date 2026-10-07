@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar produto' if product else 'Novo produto' }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">CATÁLOGO E ESTOQUE</span><h1>{{ 'Editar produto' if product else 'Cadastrar produto' }}</h1><p>{{ 'Atualize as informações do item.' if product else 'Adicione um item ao catálogo da loja.' }}</p></div><a class="button secondary" href="{{ url_for('products') }}">← Voltar</a></div>
+<form method="post" class="panel form-panel"><input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+<div class="form-section"><h2>Informações do produto</h2><p>Identifique o item e organize-o no catálogo.</p><div class="form-grid">
+<label class="span-2">Nome do produto<input name="name" value="{{ request.form.get('name', product.name if product else '') }}" placeholder="Ex.: Cimento CP-II 50kg" required></label>
+<label>Código SKU<input name="sku" value="{{ request.form.get('sku', product.sku if product else '') }}" placeholder="Ex.: CIM-001" required></label>
+<label>Categoria<input name="category" value="{{ request.form.get('category', product.category if product else '') }}" placeholder="Ex.: Cimentos" required></label>
+<label>Unidade de venda<select name="unit" required>{% set chosen_unit = request.form.get('unit', product.unit if product else '') %}{% for unit in ['un', 'saco', 'kg', 'm', 'm²', 'm³', 'litro', 'barra', 'caixa'] %}<option value="{{ unit }}" {{ 'selected' if chosen_unit == unit }}>{{ unit }}</option>{% endfor %}</select></label>
+</div></div>
+<div class="form-section"><h2>Preços e estoque</h2><p>Valores em reais e quantidades inteiras.</p><div class="form-grid">
+<label>Custo unitário (R$)<input name="cost" type="number" step="0.01" min="0" value="{{ request.form.get('cost', product.cost if product else '0.00') }}" required></label>
+<label>Preço de venda (R$)<input name="price" type="number" step="0.01" min="0" value="{{ request.form.get('price', product.price if product else '0.00') }}" required></label>
+<label>Estoque atual<input name="stock" type="number" min="0" step="1" value="{{ request.form.get('stock', product.stock if product else '0') }}" required></label>
+<label>Alerta de estoque mínimo<input name="minimum_stock" type="number" min="0" step="1" value="{{ request.form.get('minimum_stock', product.minimum_stock if product else '5') }}" required></label>
+</div></div>
+<div class="form-actions"><a class="button secondary" href="{{ url_for('products') }}">Cancelar</a><button class="button primary" type="submit">{{ 'Salvar alterações' if product else 'Cadastrar produto' }}</button></div>
+</form>
+{% endblock %}

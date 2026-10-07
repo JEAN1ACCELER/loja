@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Vendas{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">MOVIMENTAÇÃO DA LOJA</span><h1>Vendas</h1><p>Consulte as vendas registradas e confira seus detalhes.</p></div><a class="button primary" href="{{ url_for('sale_new') }}">＋ Nova venda</a></div>
+<section class="panel listing-panel"><div class="table-wrap"><table><thead><tr><th>Nº</th><th>DATA E HORA</th><th>VENDEDOR</th><th>PAGAMENTO</th><th>TOTAL</th><th></th></tr></thead><tbody>
+{% for sale in sales %}<tr><td class="cell-strong">#{{ sale.id }}</td><td>{{ sale.created_at[:16] }}</td><td>{{ sale.seller_name }}</td><td>{{ sale.payment_method }}</td><td class="cell-strong">{{ sale.total|currency }}</td><td class="actions"><a class="button small secondary" href="{{ url_for('sale_detail', sale_id=sale.id) }}">Detalhes</a></td></tr>
+{% else %}<tr><td colspan="6"><div class="empty-inline">Nenhuma venda registrada. <a href="{{ url_for('sale_new') }}">Registrar a primeira venda.</a></div></td></tr>{% endfor %}
+</tbody></table></div><div class="table-footer">Exibindo até 100 vendas recentes</div></section>
+{% endblock %}

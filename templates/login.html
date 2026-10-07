@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Entrar{% endblock %}
+{% block public_content %}
+<main class="login-page">
+    <section class="login-card">
+        <a class="brand login-brand" href="#"><span class="brand-mark">O</span><span>obra<span class="brand-light">fácil</span><small>GESTÃO DE LOJA</small></span></a>
+        <div class="login-heading"><span class="eyebrow">BEM-VINDO DE VOLTA</span><h1>Acesse sua conta</h1><p>Entre para gerenciar sua loja de materiais.</p></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+        {% endwith %}
+        <form method="post" class="form-stack">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <label>E-mail<input type="email" name="email" placeholder="seu@email.com" autocomplete="username" required autofocus></label>
+            <label>Senha<input type="password" name="password" placeholder="Sua senha" autocomplete="current-password" required></label>
+            <button class="button primary full" type="submit">Entrar no sistema <span>→</span></button>
+        </form>
+        <p class="login-note">Acesso inicial: <strong>admin@loja.local</strong> · senha <strong>admin123</strong></p>
+    </section>
+    <div class="login-side"><div class="login-side-content"><span class="side-icon">⌂</span><p>GESTÃO SIMPLES, OBRA BEM FEITA</p><h2>Sua loja em ordem.<br>Seu negócio crescendo.</h2><span>Controle estoque, equipe e vendas em um só lugar.</span></div><div class="side-foot">OBRAFÁCIL · GESTÃO DE MATERIAIS</div></div>
+</main>
+{% endblock %}
